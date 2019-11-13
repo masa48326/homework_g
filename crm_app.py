@@ -5,21 +5,42 @@ def main():
     print('===== Welcome to CRM Application ====='
           '\n[S]how: Show all users info'
           '\n[A]dd: Add new user'
+          '\n[F]ind: Find user'
+          '\n[D]elete: Delete user'
+          '\n[E]dit: Edit user info'
           '\n======================================')
     while True:
         select_menu = input()
 
         if select_menu == 'A' or select_menu == 'a':
             print(f'Your command > {select_menu}')
-            name = input('New user name > ')
-            age = input('New user age > ')
+            new_name = input('New user name > ')
+            new_age = input('New user age > ')
 
-            try:
-                register_user(name, age)
-                print(f'Add new user: {name}')
+            print(f'Duplicated user name {new_name}')
 
-            except sqlite3.IntegrityError:
-                print(f'Duplicated user name {name}')
+        if len(new_name) < 1:
+            print(f"User name can't be blank")
+
+        elif len(new_name) > 20:
+            print(f"User name is too long(maximum is 20 characters)")
+
+        elif new_age == '':
+            print(f"age can't be blank")
+
+        else:
+            if check_int(new_age) == False:
+                print(f"Age is not positive integer")
+            else:
+                try:
+                    register_user(new_name, new_age)
+                    print(f'Add new user: {new_name}')
+
+                except sqlite3.IntegrityError:
+                    print(f'Duplicated user name {new_name}')
+
+
+
 
 
         elif select_menu == 'S' or select_menu == 's':
@@ -110,6 +131,14 @@ def edit_user_name(pre_edit_name, edit_name, edit_age):
     cursor.execute(sql)
     connection.commit()
     connection.close()
+
+
+def check_int(age):
+    try:
+        int(age)
+        return True
+    except ValueError:
+        return False
 
 
 if __name__ == '__main__':
